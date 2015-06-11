@@ -29,12 +29,54 @@
 // sample code for JSONP, but an ace coder fit to work at Idea Evolver
 // should be able to figure it out anyway :)
 
-// The API Key for Compete is 82111ef10ef31de9926eb2df16b9f657
+// The API Key for Compete is 29d097f7ef019ceed97f29332345fb8d
 
 // Feel free to ask lots of questions and think aloud.
 
+//var dom=document.getElementById("domain").value;
+//console.log("Domain",dom);
+
+setTimeout(function()
+{
+	document.getElementById("go").addEventListener("click", function()
+	{
+		var domain=document.getElementById("domain").value;
+		var metricName=document.getElementById("metric").options[ document.getElementById("metric").selectedIndex ].text;
+		var metricCode=document.getElementById("metric").value;
+		
+		var start_date=document.getElementsByName("start_date")[0].value;
+		    start_date = start_date.replace(/-/g, "");
+		var end_date=document.getElementsByName("end_date")[0].value;
+			end_date = end_date.replace(/-/g, "");
+		
+		var latest=document.getElementsByName("latest")[0].value;
+		
+		var xmlhttp;
+		if (window.XMLHttpRequest)
+		  {// code for IE7+, Firefox, Chrome, Opera, Safari
+		  xmlhttp=new XMLHttpRequest();
+		  }
+		else
+		  {// code for IE6, IE5
+		  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+		  }
+		xmlhttp.onreadystatechange=function()
+		  {
+		  if (xmlhttp.readyState==4 && xmlhttp.status==200)
+			{
+			data = JSON.parse(xmlhttp.responseText);
+			makeChart(data,metricName,metricCode,domain);
+			console.log(data);
+			}
+		  }
+		xmlhttp.open("GET",'RetrieveObject.php?domain='+domain+"&metricCode="+metricCode+"&latest="+latest+"&start_date="+start_date+"&end_date="+end_date,true);
+		xmlhttp.send();
+ 		
+	});
+}, 10);
 function makeChart (data, metricName, metricCode, domain) {
-    // Params:
+
+	// Params:
     // `data` - the raw data Compete gives you after the JSONP request
     // `metricName` - a name from the Metric drop down.
     // `metricCode` - the corresponding value denoted in each metricName <option>
@@ -46,8 +88,7 @@ function makeChart (data, metricName, metricCode, domain) {
     // Don't try to understand this function.  Just give it the right
     // inputs and it will create the chart and render it into the page
     // for you.
-
-    
+  
     function getUTC(datestring){
         return Date.UTC(datestring.substring(0,4), datestring.substring(4)-1);
     }
